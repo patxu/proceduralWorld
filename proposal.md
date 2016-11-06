@@ -16,6 +16,7 @@ These two components reflect a general division of labor within the team.
 
 ## Milestones
 Each step in our timeline is relatively general and provides plenty of room for exploration and extension
+
 1. plain world mesh
 1. add variation to the mesh via noise methods
 1. partition mesh into specific regions
