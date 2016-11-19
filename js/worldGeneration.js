@@ -42,7 +42,13 @@ function init() {
 
   for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
 
-    vertices[ j + 1 ] = data[ i ] * 10;
+    if (data[i] < 50) {
+      vertices[ j + 1 ] = 500;
+      data[i] = 50;
+    } else {
+      vertices[ j + 1 ] = data[ i ] * 10;
+
+    }
 
   }
 
