@@ -88,23 +88,18 @@ function onWindowResize() {
 
 function generateHeight( width, height ) {
 
-  var size = width * height, data = new Int8Array( size );
-  var perlin = new ImprovedNoise()
-  var quality = 250, z = 7; //Math.random() * 100;
-  var noise = new Noise();
-  // var quality = 25;
+  var size = width * height, data = new Uint16Array( size );
+  var z = Math.random() * 100;
+  var perlin = new Noise();
+  var quality = 4;
 
-  for ( var j = 0; j < 1; j ++ ) {
+  for ( var j = 0; j < 4; j ++ ) {
 
     for ( var i = 0; i < size; i ++ ) {
 
       var x = i % width, y = Math.floor( i / width );
-      data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
-      var a = (noise.noise(x/quality,y/quality) * quality);
-      // var a = Math.abs(noise.noise(x/quality,y/quality) * quality);
-      // data[ i ] += a;
-      debugger;
-
+      data[i] += Math.abs(perlin.noise( x/quality, y/quality, z ) * quality);
+      
     }
 
     quality *= 5;

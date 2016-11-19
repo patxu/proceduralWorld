@@ -1,37 +1,14 @@
 // writen by Pat Xu
 //
 // adapted from sources:
+// Ken Perlin's paper - http://mrl.nyu.edu/~perlin/noise/
 // https://github.com/josephg/noisejs/blob/master/perlin.js
 // https://en.wikipedia.org/wiki/Perlin_noise
 // Fundamentals of Computer Graphics by Shirley and Marschner
 
 var Noise = function() {
 
-	// linear interpolation
-	function lerp(t, a, b) {
-		return t*a + (1-t)*b;
-	}
-
-	// fade curve
-	function fade(t) {
-		return t*t*t*(t*(t*6-15)+10);
-	}
-
-	// precomputed gradients
-	var grad3 = [
-		new Vector(1,1,0),new Vector(-1,1,0),new Vector(1,-1,0),new Vector(-1,-1,0),
-		new Vector(1,0,1),new Vector(-1,0,1),new Vector(1,0,-1),new Vector(-1,0,-1),
-		new Vector(0,1,1),new Vector(0,-1,1),new Vector(0,1,-1),new Vector(0,-1,-1)
-	];
-
-	// var gradP = new Array(256);
-	// for (var i = 0; i < 256; i++){
-	// 	index = Math.floor((Math.random() * 12) + 1);
-	// 	gradP[i] = grad3[index % 12];
-	// }
-
-
-	// randomly permuted indices
+	// precomputed random indices [0,255]
   var p = [
 		151,160,137,91,90,15,
 	  131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
@@ -48,49 +25,45 @@ var Noise = function() {
 	  138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
 	];
 
-  // To remove the need for index wrapping, double the permutation table length
-  var perm = new Array(512);
-  var gradP = new Array(512);
-
-	function grad(hash, x, y, z) {
-
-		var h = hash & 15;
-		var u = h < 8 ? x : y, v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-		return ((h&1) === 0 ? u : -u) + ((h&2) === 0 ? v : -v);
-
-	}
-
 	return {
 
-		noise: function(x,y) {
-			var z = 0;
-			// Find unit grid cell containing point
-	    var X = Math.floor(x), Y = Math.floor(y);
+		noise: function(x,y,z) {
+			// find unit grid cell containing point
+	    var X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z);
 
-	    // Get relative xy coordinates of point within that cell
-	    x = x - X; y = y - Y;
+	    // get relative xy coordinates of point within that cell
+	    x = x - X;
+			y = y - Y;
+			z = z - Z;
 
-	    // Wrap the integer cells at 255 (smaller integer period can be introduced here)
-	    X = X & 255; Y = Y & 255;
+	    // wrap the integer cells at 255
+	    X = X & 255;
+			Y = Y & 255;
+			Z = Z & 255;
 
-			var n00 = grad(perm[Y], x, y, z);
-			var n01 = grad(perm[Y+1], x, y-1, z);
-			var n10 = grad(perm[Y], x-1, y, z);
-			var n11 = grad(perm[Y+1], x-1, y-1, z);
+			var n00 = grad(p[Y], x, y, z);
+			var n01 = grad(p[Y+1], x, y-1, z);
+			var n10 = grad(p[Y], x-1, y, z);
+			var n11 = grad(p[Y+1], x-1, y-1, z);
 
-	    // Compute the fade curve value for x and y
-	    var u = fade(x);
-			var v = fade(y);
+	    // Compute the fade curve values
+			var u = fade(x), v = fade(y), w = fade(z);
 
-	    // Interpolate the four results
-	    return lerp(
-					        lerp(n00, n10, u),
-					        lerp(n01, n11, u),
-									v
-								 );
+			// gradient randomness
+			var A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z;
+			var B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
+
+			// interpolate
+			return lerp(w,  lerp(v, lerp(u, grad(p[AA], x, y, z),
+																			grad(p[BA], x-1, y, z)),
+															lerp(u, grad(p[AB], x, y-1, z),
+																			grad(p[BB], x-1, y-1, z))),
+											lerp(v, lerp(u, grad(p[AA + 1], x, y, z-1),
+																			grad(p[BA + 1], x-1, y, z-1)),
+															lerp(u, grad(p[AB + 1], x, y-1, z-1),
+																			grad(p[BB + 1], x-1, y-1, z-1))));
 		}
 
 	};
-
 
 };
