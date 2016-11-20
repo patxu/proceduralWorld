@@ -97,13 +97,13 @@ var Noise = function() {
 
 		// interpolate
 		return lerp(w,  lerp(v, lerp(u, grad(indices[AA], x, y, z),
-		grad(indices[BA], x-1, y, z)),
-		lerp(u, grad(indices[AB], x, y-1, z),
-		grad(indices[BB], x-1, y-1, z))),
-		lerp(v, lerp(u, grad(indices[AA + 1], x, y, z-1),
-		grad(indices[BA + 1], x-1, y, z-1)),
-		lerp(u, grad(indices[AB + 1], x, y-1, z-1),
-		grad(indices[BB + 1], x-1, y-1, z-1))));
+                                		grad(indices[BA], x-1, y, z)),
+                        		lerp(u, grad(indices[AB], x, y-1, z),
+                                		grad(indices[BB], x-1, y-1, z))),
+                		lerp(v, lerp(u, grad(indices[AA + 1], x, y, z-1),
+                                		grad(indices[BA + 1], x-1, y, z-1)),
+                        		lerp(u, grad(indices[AB + 1], x, y-1, z-1),
+                                		grad(indices[BB + 1], x-1, y-1, z-1))));
 	};
 
 };
