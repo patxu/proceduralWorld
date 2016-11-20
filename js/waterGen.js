@@ -15,18 +15,17 @@
 
 // Generate a water wave mesh based on smooth noise
 function waterGenWave(width, height) {
-  var size = width * height, waterData = new Uint8Array( size ),
-  perlin = new Noise(), quality = 1, z = Math.random() * 100;
+  var size = width * height, waterData = new Uint16Array( size );
+  var z = Math.random() * 100;
+  var noise = new Noise();
+  var lacunarity = 5;
+  var octaves = 2;
+  var H = 60;
 
-  for ( var j = 0; j < 4; j ++ ) {
-
-    for ( var i = 0; i < size; i ++ ) {
-      // ~~ is used as an optimized Math.floor
-      var x = i % width, y = ~~ ( i / width );
-      waterData[ i ] += Math.abs( perlin.perlin( x / quality, y / quality, z ) * quality * 1.75 );
-    }
-
-    quality *= 5;
+  for ( var i = 0; i < size; i ++ ) {
+    var x = i % width, y = Math.floor( i / width );
+    var p = new Vector(x, y, z);
+    waterData[i] = noise.fbm(p, noise.perlin, H, lacunarity, octaves) + 500;
   }
 
   return waterData;
@@ -40,7 +39,7 @@ function waterSetVertices(waterVertices, waterData, minHeight){
       waterVertices[ j + 1 ] = 500;
       waterData[i] = waterMinHeight;
     } else {
-      waterVertices[ j + 1 ] = waterData[ i ] * 8;
+      waterVertices[ j + 1 ] = waterData[ i ];
     }
   } // end for
 

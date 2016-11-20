@@ -36,7 +36,7 @@ function init() {
   // Terrain Generation
   terrainData = generateHeight( worldWidth, worldDepth );
 
-  camera.position.y = terrainData[ worldHalfWidth + worldHalfDepth * worldWidth ] * 100 + 500;
+  camera.position.y = terrainData[ worldHalfWidth + worldHalfDepth * worldWidth ] * 10 + 500;
   camera.position.z = 600;
 
   var terrainGeometry = new THREE.PlaneBufferGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
