@@ -15,8 +15,8 @@ var terrainVertices;
 
 var counter = 0;
 
-var worldWidth = 256, worldDepth = 256,
-worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2;
+/* var worldWidth = 256, worldDepth = 256, */
+var worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2;
 
 var clock = new THREE.Clock();
 

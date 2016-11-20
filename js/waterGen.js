@@ -16,7 +16,7 @@
 // Generate a water wave mesh based on smooth noise
 function waterGenWave(width, height) {
   var size = width * height, waterData = new Uint8Array( size ),
-  perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 100;
+  perlin = new Noise(), quality = 1, z = Math.random() * 100;
 
   for ( var j = 0; j < 4; j ++ ) {
 
@@ -47,19 +47,46 @@ function waterSetVertices(waterVertices, waterData, minHeight){
   return waterVertices;
 }
 
-// Interpolate between two water wave states
-function waterLerp(waterCurrent, waterNext, t) {
-  
+/* Interpolate between two water wave states
+ * @param {array} waterVertices - List of vertices being rendered
+ * @param {array} waterCurrent  - Positions of the current state
+ * @param {array} waterNext     - Positions of the next state
+ * @param {int}   t             - Interpolation fraction
+ */
+function waterLerp(waterData, waterCurrent, waterNext, t) {
+  var size = worldWidth * worldDepth, waterData = new Uint8Array( size );
+  for ( var j = 0; j < 4; j ++ ) {
 
-  return waterVertices;
+    for ( var i = 0; i < size; i ++ ) {
+      // ~~ is used as an optimized Math.floor
+      var x = i % worldWidth, y = ~~ ( i / worldWidth );
+      waterData[ i ] =  lerp(t, waterCurrent[i], waterNext[i]);
+    }
+
+  }
+
+  return waterData;
 }
 
+var worldWidth = 256, worldDepth = 256;
 // Animate the waves
-function waterAnimate(){
-  waterData = waterGenWave( worldWidth, worldDepth );
-  waterVertices = waterGeometry.attributes.position.array;
+var waterCount = 1;
+var waterCurrent = waterGenWave(worldWidth, worldDepth);
+var waterNext = waterGenWave(worldWidth, worldDepth);
+var waterMinHeight = 75;
 
-  waterMinHeight = 75;
-  waterSetVertices(waterVertices, waterData, waterMinHeight);
-  waterGeometry.attributes.position.needsUpdate = true;
+var newStates = 100;
+function waterAnimate(){
+  if(waterCount % newStates === 0){
+    waterCurrent = waterNext;
+    waterNext = waterGenWave(worldWidth, worldDepth);
+  }
+
+    waterVertices = waterGeometry.attributes.position.array;
+    waterData = waterLerp(waterData, waterCurrent, waterNext, (waterCount % newStates)/newStates);
+    
+    waterSetVertices(waterVertices, waterData, waterMinHeight);
+    waterGeometry.attributes.position.needsUpdate = true;
+
+  waterCount++;
 }
