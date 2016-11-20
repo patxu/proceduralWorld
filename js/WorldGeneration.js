@@ -10,7 +10,10 @@ var container, stats;
 
 var camera, controls, scene, renderer;
 
-var mesh, texture;
+var terrainMesh, texture, waterMesh;
+var terrainVertices;
+
+var counter = 0;
 
 var worldWidth = 256, worldDepth = 256,
 worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2;
@@ -21,45 +24,60 @@ init();
 animate();
 
 function init() {
-
   container = document.getElementById( 'container' );
-
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 20000 );
-
   scene = new THREE.Scene();
 
   controls = new THREE.FirstPersonControls( camera );
   controls.movementSpeed = 1000;
   controls.lookSpeed = 0.1;
 
-  data = generateHeight( worldWidth, worldDepth );
+  // Terrain Generation
+  terrainData = generateHeight( worldWidth, worldDepth );
 
-  camera.position.y = data[ worldHalfWidth + worldHalfDepth * worldWidth ] * 10 + 1500;
+  camera.position.y = terrainData[ worldHalfWidth + worldHalfDepth * worldWidth ] * 100 + 500;
+  camera.position.z = 600;
 
-  var geometry = new THREE.PlaneBufferGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
-  geometry.rotateX( - Math.PI / 2 );
+  var terrainGeometry = new THREE.PlaneBufferGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
+  terrainGeometry.rotateX( - Math.PI / 2 );
 
-  var vertices = geometry.attributes.position.array;
+  terrainVertices = terrainGeometry.attributes.position.array;
 
-  for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
-
-    // if (data[i] < 50) {
-    //   vertices[ j + 1 ] = 500;
-    //   data[i] = 50;
-    // } else {
-      // vertices[ j + 1 ] = (1-Math.abs(data[ i ])) * 10;
-      vertices[ j + 1 ] = data[ i ] * 10;
-
-    // }
+  for ( var i = 0, j = 0, l = terrainVertices.length; i < l; i ++, j += 3 ) {
+    if (terrainData[i] < 50) {
+      terrainVertices[ j + 1 ] = 500;
+      terrainData[i] = 50;
+    } else {
+      terrainVertices[ j + 1 ] = terrainData[ i ] * 10;
+    }
 
   }
 
-  texture = new THREE.CanvasTexture( generateTexture( data, worldWidth, worldDepth ) );
+  texture = new THREE.CanvasTexture( generateTexture( terrainData, worldWidth, worldDepth ) );
   texture.wrapS = THREE.ClampToEdgeWrapping;
   texture.wrapT = THREE.ClampToEdgeWrapping;
 
-  mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { map: texture } ) );
-  scene.add( mesh );
+  terrainMesh = new THREE.Mesh( terrainGeometry, new THREE.MeshBasicMaterial( { map: texture } ) );
+  scene.add( terrainMesh );
+
+  // End Terrain Generation
+
+  // Water Generation
+  waterGeometry = new THREE.PlaneBufferGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
+  waterGeometry.dynamic = true;
+  waterGeometry.rotateX( - Math.PI / 2 );
+
+  waterData = waterGenWave( worldWidth, worldDepth );
+  waterVertices = waterGeometry.attributes.position.array;
+
+  waterMinHeight = 75;
+  waterSetVertices(waterVertices, waterData, waterMinHeight);
+
+  waterMesh = new THREE.Mesh( waterGeometry, new THREE.MeshBasicMaterial(
+  {color: 0x42A5F5,
+   transparent: true,
+   opacity: 0.9}));
+  scene.add( waterMesh );
 
   renderer = new THREE.WebGLRenderer();
   renderer.setClearColor( 0xbfd1e5 );
@@ -67,12 +85,9 @@ function init() {
   renderer.setSize( window.innerWidth, window.innerHeight );
 
   container.innerHTML = "";
-
   container.appendChild( renderer.domElement );
 
-
   window.addEventListener( 'resize', onWindowResize, false );
-
 }
 
 function onWindowResize() {
@@ -172,13 +187,13 @@ function generateTexture( data, width, height ) {
 }
 
 function animate() {
+  counter ++;
   requestAnimationFrame( animate );
+  waterAnimate();
   render();
 }
 
 function render() {
-
   controls.update( clock.getDelta() );
   renderer.render( scene, camera );
-
 }
