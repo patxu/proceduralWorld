@@ -76,7 +76,7 @@ function init() {
   scene.add( waterMesh );
 
   renderer = new THREE.WebGLRenderer();
-  renderer.setClearColor( 0xbfd1e5 );
+  renderer.setClearColor( 0xFFCDD2);
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
 
