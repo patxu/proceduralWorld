@@ -10,7 +10,7 @@ var waterCurrent = waterGenWave(worldWidth, worldDepth);
 var waterNext = waterGenWave(worldWidth, worldDepth);
 var waterMinHeight = 100;
 
-var newStates = 100;
+var newStates = 5000;
 
 // Generate a water wave mesh based on smooth noise
 
@@ -62,20 +62,21 @@ function waterLerp(waterData, waterCurrent, waterNext, t) {
 var wait = 0;
 function waterAnimate(){
   if(waterCount % newStates === 0){
-    if(wait === 10) {
+    // if(wait === 10) {
       waterCurrent = waterNext;
       waterNext = waterGenWave(worldWidth, worldDepth);
       wait = 0;
-    } else {
-      wait++;
-      return
-    }
+    // } else {
+    //   wait++;
+    //   return
+    // }
   }
 
   waterVertices = waterGeometry.attributes.position.array;
   t = (waterCount % newStates)/newStates;
+  t = sinFade(t);
   waterData = waterLerp(waterData, waterCurrent, waterNext, t);
-  
+
   waterSetVertices(waterVertices, waterData, waterMinHeight);
   waterGeometry.attributes.position.needsUpdate = true;
 

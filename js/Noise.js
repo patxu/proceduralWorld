@@ -38,7 +38,7 @@ var Noise = function() {
 	};
 
   Noise.prototype.worleyInit = function(width, height){
-    var size = Math.floor(width * height / 100);
+    var size = Math.floor(width * height / 50);
     worleyPoints = new Array(size);
     for (var i = 0; i < size; i++) {
       var x = Math.random() * size;
@@ -63,7 +63,7 @@ var Noise = function() {
     }
 
     for (i = 0; i < width * height; i++) {
-      distances[i] = distances[i] / max * 300 + 500;
+      distances[i] = distances[i] / max * 100 + 500;
     }
 
     return distances;
