@@ -32,17 +32,18 @@ function generateTexture( data, width, height ) {
 
     shade = vector3.dot( sun );
 
+    var variation  = Math.abs(noise.perlin(data[j], Math.random(), Math.random()));
+
     var b1 = imageData[ i ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
     var b2 = imageData[ i + 1 ] = ( 32 + shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
     var b3 = imageData[ i + 2 ] = ( shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
 
-    var variation  = Math.abs(noise.perlin(data[j], Math.random(), Math.random()));
-
     var snowLine = 80;
+
     if (data[j] < snowLine) {
-      imageData[ i ] = ( 96 + shade * 128 ) * ( 0.5 + data[ j ] * 0.007 );
-      imageData[ i + 1 ] = ( 32 + shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
-      imageData[ i + 2 ] = ( shade * 96 ) * ( 0.5 + data[ j ] * 0.007 );
+      imageData[ i ] = b1;
+      imageData[ i+1 ] = b2;
+      imageData[ i+2 ] = b3;
     } else if (data[j] < snowLine + 30){
       var t = sinFade((1/8)*Math.min((Math.abs((data[j]-snowLine) / 50)),1));
       imageData[ i ] = lerp(t, b1, 255 * (1 - variation));

@@ -92,8 +92,8 @@ function init() {
 
 
   renderer = new THREE.WebGLRenderer();
+  renderer.setClearColor( 0xFFCDD2);
   canvas = renderer.domElement;
-  renderer.setClearColor( 0xbfd1e5 );
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
 
