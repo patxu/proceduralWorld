@@ -10,10 +10,6 @@ function fade(t) {
   return t*t*t*(t*(t*6-15)+10);
 }
 
-function fadeL(t) {
-  return t*(t*(t*6-15)+10);
-}
-
 // converts lo 4 bits of hash code into 12 gradient directions
 // http://mrl.nyu.edu/~perlin/noise/
 function grad(hash, x, y, z) {

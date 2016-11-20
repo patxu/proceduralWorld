@@ -77,12 +77,12 @@ function waterAnimate(){
     }
   }
 
-    waterVertices = waterGeometry.attributes.position.array;
-    t = (waterCount % newStates)/newStates;
-    waterData = waterLerp(waterData, waterCurrent, waterNext, t);
-    
-    waterSetVertices(waterVertices, waterData, waterMinHeight);
-    waterGeometry.attributes.position.needsUpdate = true;
+  waterVertices = waterGeometry.attributes.position.array;
+  t = (waterCount % newStates)/newStates;
+  waterData = waterLerp(waterData, waterCurrent, waterNext, t);
+  
+  waterSetVertices(waterVertices, waterData, waterMinHeight);
+  waterGeometry.attributes.position.needsUpdate = true;
 
   waterCount++;
 }
