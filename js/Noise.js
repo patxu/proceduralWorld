@@ -1,4 +1,4 @@
-// writen by Pat Xu
+// author: Pat Xu
 //
 // adapted from sources:
 // Ken Perlin's paper - http://mrl.nyu.edu/~perlin/noise/
@@ -25,45 +25,52 @@ var Noise = function() {
 	  138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
 	];
 
-	return {
-
-		noise: function(x,y,z) {
-			// find unit grid cell containing point
-	    var X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z);
-
-	    // get relative xy coordinates of point within that cell
-	    x = x - X;
-			y = y - Y;
-			z = z - Z;
-
-	    // wrap the integer cells at 255
-	    X = X & 255;
-			Y = Y & 255;
-			Z = Z & 255;
-
-			var n00 = grad(p[Y], x, y, z);
-			var n01 = grad(p[Y+1], x, y-1, z);
-			var n10 = grad(p[Y], x-1, y, z);
-			var n11 = grad(p[Y+1], x-1, y-1, z);
-
-	    // Compute the fade curve values
-			var u = fade(x), v = fade(y), w = fade(z);
-
-			// gradient randomness
-			var A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z;
-			var B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
-
-			// interpolate
-			return lerp(w,  lerp(v, lerp(u, grad(p[AA], x, y, z),
-																			grad(p[BA], x-1, y, z)),
-															lerp(u, grad(p[AB], x, y-1, z),
-																			grad(p[BB], x-1, y-1, z))),
-											lerp(v, lerp(u, grad(p[AA + 1], x, y, z-1),
-																			grad(p[BA + 1], x-1, y, z-1)),
-															lerp(u, grad(p[AB + 1], x, y-1, z-1),
-																			grad(p[BB + 1], x-1, y-1, z-1))));
+	// p is a vector
+	// noise is the noise function
+	Noise.prototype.fbm = function(p, noise, H, lacunarity, octaves) {
+		var val = 0;
+		for ( var j = 0; j < octaves; j++ ) {
+			val += Math.abs(this.perlin( p.x/H, p.y/H, p.z ) * H);
+			H *= lacunarity;
 		}
+		return val;
+	};
 
+	Noise.prototype.perlin = function(x,y,z) {
+		// find unit grid cell containing point
+		var X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z);
+
+		// get relative xy coordinates of point within that cell
+		x = x - X;
+		y = y - Y;
+		z = z - Z;
+
+		// wrap the integer cells at 255
+		X = X & 255;
+		Y = Y & 255;
+		Z = Z & 255;
+
+		var n00 = grad(p[Y], x, y, z);
+		var n01 = grad(p[Y+1], x, y-1, z);
+		var n10 = grad(p[Y], x-1, y, z);
+		var n11 = grad(p[Y+1], x-1, y-1, z);
+
+		// Compute the fade curve values
+		var u = fade(x), v = fade(y), w = fade(z);
+
+		// gradient randomness
+		var A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z;
+		var B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
+
+		// interpolate
+		return lerp(w,  lerp(v, lerp(u, grad(p[AA], x, y, z),
+		grad(p[BA], x-1, y, z)),
+		lerp(u, grad(p[AB], x, y-1, z),
+		grad(p[BB], x-1, y-1, z))),
+		lerp(v, lerp(u, grad(p[AA + 1], x, y, z-1),
+		grad(p[BA + 1], x-1, y, z-1)),
+		lerp(u, grad(p[AB + 1], x, y-1, z-1),
+		grad(p[BB + 1], x-1, y-1, z-1))));
 	};
 
 };

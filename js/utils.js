@@ -1,4 +1,4 @@
-// writen by Pat Xu
+// author: Pat Xu
 
 // linear interpolation
 function lerp(t, a, b) {
