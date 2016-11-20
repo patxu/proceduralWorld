@@ -1,4 +1,5 @@
 // author: Pat Xu
+
 function generateHeight( width, height ) {
 
   var size = width * height, data = new Uint16Array( size );
@@ -8,10 +9,10 @@ function generateHeight( width, height ) {
   var octaves = 3;
   var H = 8;
 
-  for ( var i = 0; i < size; i ++ ) {
+  for ( var i = 0; i < size; i++ ) {
     var x = i % width, y = Math.floor( i / width );
     var p = new Vector(x, y, z);
-    data[i] = noise.fbm(p, noise.perlin, H, lacunarity, octaves);
+    data[i] = noise.fbmPerlin(p, H, lacunarity, octaves);
   }
 
   return data;

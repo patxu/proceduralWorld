@@ -26,8 +26,11 @@ animate();
 
 function init() {
   container = document.getElementById( 'container' );
-  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 20000 );
+  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
   scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2( 0x7084a3, 0.0003 );
+  // scene.fog = new THREE.Fog( 0x7084a3, 100, 1000 );
+
 
   controls = new THREE.FirstPersonControls( camera );
   controls.movementSpeed = 1000;
@@ -106,7 +109,10 @@ function onWindowResize() {
 function animate() {
   counter ++;
   requestAnimationFrame( animate );
-  waterAnimate();
+  if (counter % 120 === 0) {
+    counter = 0;
+    waterAnimate();
+  }
   render();
 }
 
