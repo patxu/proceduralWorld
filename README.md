@@ -20,7 +20,7 @@ Overview of major components and our approach.
 ### Water Generation
 - vertex mesh with displacement via Worley noise
 
-  <img src="imgs/worley.jpg" height=200x>
+  <img src="imgs/worley.png" height=200x>
   <img src="imgs/worley_texture.jpg" height=200x>
 
 ## Inspiration
@@ -38,5 +38,6 @@ Some of the images that inspired this project.
   <img src="imgs/water_reflection.jpg" height=200x>
 
 - L-system support for vegetation
+
   <img src="imgs/l_system_plants.jpg" height=200x>
   <img src="imgs/l_system_tree.jpg" height=200x>
