@@ -13,19 +13,14 @@ var waterMinHeight = 100;
 var newStates = 100;
 
 // Generate a water wave mesh based on smooth noise
+
+
 function waterGenWave(width, height) {
   var size = width * height, waterData = new Uint16Array( size );
-  var z = Math.random() * 100;
   var noise = new Noise();
-  var lacunarity = 5;
-  var octaves = 2;
-  var H = 60;
 
-  for ( var i = 0; i < size; i ++ ) {
-    var x = i % width, y = Math.floor( i / width );
-    var p = new Vector(x, y, z);
-    waterData[i] = noise.fbm(p, noise.perlin, H, lacunarity, octaves) + 500;
-  }
+  noise.worleyInit(width, height);
+  waterData = noise.worley(width, height);
 
   return waterData;
 }

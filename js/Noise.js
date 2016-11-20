@@ -9,7 +9,7 @@
 var Noise = function() {
 
 	// precomputed random indices [0,255]
-  var p = [
+  var indices = [
 		151,160,137,91,90,15,
 	  131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
 	  190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
@@ -25,9 +25,10 @@ var Noise = function() {
 	  138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
 	];
 
+  var worleyPoints;
+
 	// p is a vector
-	// noise is the noise function
-	Noise.prototype.fbm = function(p, noise, H, lacunarity, octaves) {
+	Noise.prototype.fbmPerlin = function(p, H, lacunarity, octaves) {
 		var val = 0;
 		for ( var j = 0; j < octaves; j++ ) {
 			val += Math.abs(this.perlin( p.x/H, p.y/H, p.z ) * H);
@@ -36,7 +37,39 @@ var Noise = function() {
 		return val;
 	};
 
-	Noise.prototype.perlin = function(x,y,z) {
+  Noise.prototype.worleyInit = function(width, height){
+    var size = Math.floor(width * height / 100);
+    worleyPoints = new Array(size);
+    for (var i = 0; i < size; i++) {
+      var x = Math.random() * size;
+      var y = Math.random() * size;
+      worleyPoints[i] = new Vector(x,y);
+    }
+  };
+
+  Noise.prototype.worley = function(width, height) {
+    var distances = [width * height];
+    var max = 0;
+    var i = 0;
+    for (var w = 0; w < width; w++) {
+      for (var h = 0; h < height; h++) {
+        var p = new Vector(w, h);
+        distances[i] = distanceToClosest(p, worleyPoints);
+        if (distances[i] > max) {
+          max = distances[i];
+        }
+        i++;
+      }
+    }
+
+    for (i = 0; i < width * height; i++) {
+      distances[i] = distances[i] / max * 300 + 500;
+    }
+
+    return distances;
+  };
+
+	Noise.prototype.perlin = function(x, y, z) {
 		// find unit grid cell containing point
 		var X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z);
 
@@ -50,27 +83,27 @@ var Noise = function() {
 		Y = Y & 255;
 		Z = Z & 255;
 
-		var n00 = grad(p[Y], x, y, z);
-		var n01 = grad(p[Y+1], x, y-1, z);
-		var n10 = grad(p[Y], x-1, y, z);
-		var n11 = grad(p[Y+1], x-1, y-1, z);
+		var n00 = grad(indices[Y], x, y, z);
+		var n01 = grad(indices[Y+1], x, y-1, z);
+		var n10 = grad(indices[Y], x-1, y, z);
+		var n11 = grad(indices[Y+1], x-1, y-1, z);
 
 		// Compute the fade curve values
 		var u = fade(x), v = fade(y), w = fade(z);
 
 		// gradient randomness
-		var A = p[X] + Y, AA = p[A] + Z, AB = p[A + 1] + Z;
-		var B = p[X + 1] + Y, BA = p[B] + Z, BB = p[B + 1] + Z;
+		var A = indices[X] + Y, AA = indices[A] + Z, AB = indices[A + 1] + Z;
+		var B = indices[X + 1] + Y, BA = indices[B] + Z, BB = indices[B + 1] + Z;
 
 		// interpolate
-		return lerp(w,  lerp(v, lerp(u, grad(p[AA], x, y, z),
-		grad(p[BA], x-1, y, z)),
-		lerp(u, grad(p[AB], x, y-1, z),
-		grad(p[BB], x-1, y-1, z))),
-		lerp(v, lerp(u, grad(p[AA + 1], x, y, z-1),
-		grad(p[BA + 1], x-1, y, z-1)),
-		lerp(u, grad(p[AB + 1], x, y-1, z-1),
-		grad(p[BB + 1], x-1, y-1, z-1))));
+		return lerp(w,  lerp(v, lerp(u, grad(indices[AA], x, y, z),
+		grad(indices[BA], x-1, y, z)),
+		lerp(u, grad(indices[AB], x, y-1, z),
+		grad(indices[BB], x-1, y-1, z))),
+		lerp(v, lerp(u, grad(indices[AA + 1], x, y, z-1),
+		grad(indices[BA + 1], x-1, y, z-1)),
+		lerp(u, grad(indices[AB + 1], x, y-1, z-1),
+		grad(indices[BB + 1], x-1, y-1, z-1))));
 	};
 
 };
