@@ -109,10 +109,7 @@ function onWindowResize() {
 function animate() {
   counter ++;
   requestAnimationFrame( animate );
-  if (counter % 120 === 0) {
-    counter = 0;
-    waterAnimate();
-  }
+  waterAnimate();
   render();
 }
 
