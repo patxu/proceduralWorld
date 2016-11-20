@@ -1,4 +1,4 @@
-// writen by Pat Xu
+// author: Pat Xu
 //
 // adapted from sources:
 // Ken Perlin's paper - http://mrl.nyu.edu/~perlin/noise/
