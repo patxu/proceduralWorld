@@ -18,8 +18,28 @@
 		<script src="js/controls/FirstPersonControls.js"></script>
 		<script src="js/Detector.js"></script>
 		<script src="js/libs/stats.min.js"></script></script>
+		<script src="js/threex.cubecamera.js"></script>
 
 		<!-- our scripts -->
+		<script id="vertex_shader" type="x-shader/x-vertex">
+
+			void main(void) {
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		</script>
+
+		<script id="fragment_shader" type="x-shader/x-fragment">
+			precision highp float;
+
+			uniform vec2 resolution;
+			uniform vec3 cameraPos;
+			uniform vec3 cameraDir;
+
+			void main(void) {
+				gl_FragColor = vec4(0.26, 0.65, 0.96, 1.0);
+			}
+		</script>
+
 		<script src="js/utils.js"></script>
 		<script src="js/vector.js"></script>
 		<script src="js/Noise.js"></script>

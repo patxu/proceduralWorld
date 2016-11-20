@@ -69,14 +69,31 @@ function init() {
   waterMinHeight = 75;
   waterSetVertices(waterVertices, waterData, waterMinHeight);
 
-  waterMesh = new THREE.Mesh( waterGeometry, new THREE.MeshBasicMaterial(
-  {color: 0x42A5F5,
-   transparent: true,
-   opacity: 0.9}));
+  var material = new THREE.ShaderMaterial({
+                                        uniforms: {
+                                          resolution: {value: new THREE.Vector2(512, 512)},
+                                          cameraPos: {value: camera.getWorldPosition()},
+                                          cameraDir: {value: camera.getWorldDirection()}
+                                        },
+                                        vertexShader: document.getElementById( 'vertex_shader' ).textContent,
+                                        fragmentShader: document.getElementById( 'fragment_shader').textContent
+                                      });
+
+  /* waterMesh = new THREE.Mesh( waterGeometry, new THREE.MeshBasicMaterial( */
+  /*   { color: 0x42A5F5, */
+  /*     transparent: true, */
+  /*     opacity: 0.9 }) */
+  /* ); */
+
+
+  waterMesh = new THREE.Mesh(waterGeometry, material);
+
   scene.add( waterMesh );
+
 
   renderer = new THREE.WebGLRenderer();
   renderer.setClearColor( 0xFFCDD2);
+  canvas = renderer.domElement;
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.setSize( window.innerWidth, window.innerHeight );
 
