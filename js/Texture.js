@@ -58,8 +58,8 @@ function generateTexture( data, width, height ) {
 
   context.putImageData( image, 0, 0 );
 
-  // var scale = 32;
-  var scale = 4;
+  var scale = 32;
+  // var scale = 4;
 
   canvasScaled = document.createElement( 'canvas' );
   canvasScaled.width = width * scale;
