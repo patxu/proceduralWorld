@@ -1,7 +1,9 @@
-# proceduralWorld
-Authors: Sidney Wijngaarde and Pat Xu
+# Procedural World Generation
+#### Authors: Sidney Wijngaarde and Pat Xu
+#### [Presentation](https://docs.google.com/presentation/d/15x-g8li7KDZ4iqEUCILEOowCqIB52Eww9zLpJswj4Xs/edit?usp=sharing)
 
 <img src="imgs/final_world.png" height=400x>
+
 
 ## Techniques
 Overview of major components and our approach.
