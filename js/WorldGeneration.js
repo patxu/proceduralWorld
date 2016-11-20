@@ -44,7 +44,6 @@ function init() {
   terrainVertices = terrainGeometry.attributes.position.array;
 
   for ( var i = 0, j = 0, l = terrainVertices.length; i < l; i ++, j += 3 ) {
-
     if (terrainData[i] < 50) {
       terrainVertices[ j + 1 ] = 500;
       terrainData[i] = 50;
@@ -107,17 +106,18 @@ function onWindowResize() {
 
 function generateHeight( width, height ) {
 
-  var size = width * height, data = new Uint8Array( size ),
-  perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 100;
+  var size = width * height, data = new Uint16Array( size );
+  var z = Math.random() * 100;
+  var perlin = new Noise();
+  var quality = 4;
 
   for ( var j = 0; j < 4; j ++ ) {
 
     for ( var i = 0; i < size; i ++ ) {
 
-      // ~~ is used as an optimized Math.floor
-      var x = i % width, y = ~~ ( i / width );
-      data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
-
+      var x = i % width, y = Math.floor( i / width );
+      data[i] += Math.abs(perlin.noise( x/quality, y/quality, z ) * quality);
+      
     }
 
     quality *= 5;
@@ -198,11 +198,7 @@ function animate() {
   counter ++;
   requestAnimationFrame( animate );
   waterAnimate();
-
-  
   render();
-  stats.update();
-
 }
 
 function render() {

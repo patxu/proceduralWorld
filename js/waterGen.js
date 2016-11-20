@@ -48,8 +48,9 @@ function waterSetVertices(waterVertices, waterData, minHeight){
 }
 
 // Interpolate between two water wave states
-function waterLerp(waterCurrent, waterNext) {
+function waterLerp(waterCurrent, waterNext, t) {
   
+
   return waterVertices;
 }
 
