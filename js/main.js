@@ -26,8 +26,10 @@ animate();
 
 function init() {
   container = document.getElementById( 'container' );
-  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 20000 );
+  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
   scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2( 0x7084a3, 0.0003 );
+
 
   controls = new THREE.FirstPersonControls( camera );
   controls.movementSpeed = 1000;
@@ -37,7 +39,6 @@ function init() {
   terrainData = generateHeight( worldWidth, worldDepth );
 
   camera.position.y = terrainData[ worldHalfWidth + worldHalfDepth * worldWidth ] * 10 + 500;
-  camera.position.z = 600;
 
   var terrainGeometry = new THREE.PlaneBufferGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
   terrainGeometry.rotateX( - Math.PI / 2 );
@@ -45,13 +46,7 @@ function init() {
   terrainVertices = terrainGeometry.attributes.position.array;
 
   for ( var i = 0, j = 0, l = terrainVertices.length; i < l; i ++, j += 3 ) {
-    if (terrainData[i] < 50) {
-      terrainVertices[ j + 1 ] = 500;
-      terrainData[i] = 50;
-    } else {
-      terrainVertices[ j + 1 ] = terrainData[ i ] * 10;
-    }
-
+    terrainVertices[ j + 1 ] = terrainData[ i ] * 10 + 300;
   }
 
   texture = new THREE.CanvasTexture( generateTexture( terrainData, worldWidth, worldDepth ) );
