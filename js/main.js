@@ -48,13 +48,7 @@ function init() {
   terrainVertices = terrainGeometry.attributes.position.array;
 
   for ( var i = 0, j = 0, l = terrainVertices.length; i < l; i ++, j += 3 ) {
-    if (terrainData[i] < 50) {
-      terrainVertices[ j + 1 ] = 500;
-      terrainData[i] = 50;
-    } else {
-      terrainVertices[ j + 1 ] = terrainData[ i ] * 10;
-    }
-
+    terrainVertices[ j + 1 ] = terrainData[ i ] * 10 + 300;
   }
 
   texture = new THREE.CanvasTexture( generateTexture( terrainData, worldWidth, worldDepth ) );
