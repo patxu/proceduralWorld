@@ -33,7 +33,7 @@ function init() {
 
   data = generateHeight( worldWidth, worldDepth );
 
-  camera.position.y = data[ worldHalfWidth + worldHalfDepth * worldWidth ] * 10 + 500;
+  camera.position.y = data[ worldHalfWidth + worldHalfDepth * worldWidth ] * 10 + 1500;
 
   var geometry = new THREE.PlaneBufferGeometry( 7500, 7500, worldWidth - 1, worldDepth - 1 );
   geometry.rotateX( - Math.PI / 2 );
@@ -42,13 +42,14 @@ function init() {
 
   for ( var i = 0, j = 0, l = vertices.length; i < l; i ++, j += 3 ) {
 
-    if (data[i] < 50) {
-      vertices[ j + 1 ] = 500;
-      data[i] = 50;
-    } else {
+    // if (data[i] < 50) {
+    //   vertices[ j + 1 ] = 500;
+    //   data[i] = 50;
+    // } else {
+      // vertices[ j + 1 ] = (1-Math.abs(data[ i ])) * 10;
       vertices[ j + 1 ] = data[ i ] * 10;
 
-    }
+    // }
 
   }
 
@@ -87,17 +88,18 @@ function onWindowResize() {
 
 function generateHeight( width, height ) {
 
-  var size = width * height, data = new Uint8Array( size ),
-  perlin = new ImprovedNoise(), quality = 1, z = Math.random() * 100;
+  var size = width * height, data = new Uint16Array( size );
+  var z = Math.random() * 100;
+  var perlin = new Noise();
+  var quality = 4;
 
   for ( var j = 0; j < 4; j ++ ) {
 
     for ( var i = 0; i < size; i ++ ) {
 
-      // ~~ is used as an optimized Math.floor
-      var x = i % width, y = ~~ ( i / width );
-      data[ i ] += Math.abs( perlin.noise( x / quality, y / quality, z ) * quality * 1.75 );
-
+      var x = i % width, y = Math.floor( i / width );
+      data[i] += Math.abs(perlin.noise( x/quality, y/quality, z ) * quality);
+      
     }
 
     quality *= 5;
@@ -174,15 +176,9 @@ function generateTexture( data, width, height ) {
 
 }
 
-//
-
 function animate() {
-
   requestAnimationFrame( animate );
-
   render();
-  stats.update();
-
 }
 
 function render() {
