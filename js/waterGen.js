@@ -10,7 +10,7 @@ var waterCurrent = waterGenWave(worldWidth, worldDepth);
 var waterNext = waterGenWave(worldWidth, worldDepth);
 var waterMinHeight = 100;
 
-var newStates = 5000;
+var newStates = 1500;
 
 // Generate a water wave mesh based on smooth noise
 
